@@ -1,8 +1,8 @@
 CC = gcc
 SRC_DIR = src
 INC_DIR = include
-SRC = shellsort.c
-INC = shellsort.h
+SRC = quad.c
+INC = quad.h
 TARGET = run
 
 $(TARGET) : driver.c $(SRC_DIR)/$(SRC) $(INC_DIR)/$(INC)

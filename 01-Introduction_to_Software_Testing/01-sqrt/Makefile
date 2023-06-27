@@ -1,7 +1,12 @@
 CC = gcc
+SRC_DIR = src
+INC_DIR = include
+SRC = sqrt.c
+INC = sqrt.h
+TARGET = run
 
-run : driver.c src/sqrt.c include/sqrt.h
-	gcc -o run driver.c src/sqrt.c -I./include
+$(TARGET) : driver.c $(SRC_DIR)/$(SRC) $(INC_DIR)/$(INC)
+	gcc -o $(TARGET) driver.c $(SRC_DIR)/$(SRC) -I./$(INC_DIR)
 
 clean :
-	rm -rf run
+	rm -rf $(TARGET)
