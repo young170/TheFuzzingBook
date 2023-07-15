@@ -9,7 +9,7 @@
 
 #define EPSILON 1e-8
 
-void my_sqrt_program(char *arg);
+void my_sqrt_program (char *arg);
 double my_sqrt (double x);
 void my_sqrt_checked (double x);
 void assertEquals (double x, double y);
