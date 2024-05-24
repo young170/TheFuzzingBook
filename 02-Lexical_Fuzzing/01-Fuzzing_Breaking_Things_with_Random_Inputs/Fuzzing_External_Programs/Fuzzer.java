@@ -1,17 +1,35 @@
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.BufferedReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.Random;
 
 public class Fuzzer {
 
-    public static void main (String[] args) {
+    public static void main(String[] args) {
         Fuzzer fuzzer = new Fuzzer();
-        String data = fuzzer.fuzzer();
+        int trials = 100;
+        String targetProgramName = "bc";
+        String inputFilePath = "input/input.txt";
+        HashMap<String, String> runs = new HashMap<>();
 
-        Path filePath = Paths.get("input/input.txt");
+        for (int i = 0; i < trials; i++) {
+            String data = fuzzer.fuzzer();
+            Path filePath = Paths.get(inputFilePath);
+            fuzzer.writeDataToFile(filePath, data);
 
+            String result = fuzzer.runExternalProgram(targetProgramName, inputFilePath);
+
+            runs.put(data, result);
+
+            System.out.println(result);
+        }
+    }
+
+    public void writeDataToFile(Path filePath, String data) {
         try {
             Files.write(filePath, data.getBytes());
 
@@ -22,13 +40,42 @@ public class Fuzzer {
         }
     }
 
+    public String runExternalProgram(String programName, String inputFileName) {
+        String runResult = "";
+
+        try {
+            ProcessBuilder processBuilder = new ProcessBuilder(programName, inputFileName);
+            processBuilder.redirectErrorStream(true); // Redirect error stream to output stream
+            Process process = processBuilder.start();
+
+            // Read the output from the program
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    runResult += line;
+                }
+            }
+
+            int exitCode = process.waitFor();
+            if (exitCode != 0) {
+                System.err.println("Process exited with code: " + exitCode);
+            }
+
+        } catch (IOException | InterruptedException e) {
+            // e.printStackTrace();
+            runResult += e.getMessage();
+        }
+
+        return runResult;
+    }
+
     /**
      * Overload of fuzzer(int, int, int)
      * Default parameters
      * 
      * @return fuzzer(int, int, int)
      */
-    public String fuzzer () {
+    public String fuzzer() {
         return fuzzer(100, 32, 32);
     }
 
@@ -41,7 +88,7 @@ public class Fuzzer {
      * @param charRange range/length of the random string
      * @return random string
      */
-    public String fuzzer (int maxLength, int charStart, int charRange) {
+    public String fuzzer(int maxLength, int charStart, int charRange) {
         Random random = new Random();
         int stringLength = random.ints(0, maxLength + 1).findFirst().getAsInt();
         String out = "";
