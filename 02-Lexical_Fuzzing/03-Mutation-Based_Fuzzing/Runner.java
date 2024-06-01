@@ -1,12 +1,19 @@
+import java.util.ArrayList;
+
 public class Runner {
     
     public static void main(String[] args) {
-        MutationFuzzer fuzzer = new MutationFuzzer();
-        String seed = fuzzer.fuzzer();
-        String mutatedSeed = fuzzer.mutate(seed);
+        ArrayList<String> seeds = new ArrayList<>();
+        seeds.add("hello");
+        seeds.add("world");
 
-        System.out.println(seed);
-        System.out.println(mutatedSeed);
+        MutationFuzzer fuzzer = new MutationFuzzer(seeds, 1, 5);
+        fuzzer.reset();
+
+        for (int i = 0; i < 10; i++) {
+            String fuzzedInput = fuzzer.fuzz();
+            System.out.println(fuzzedInput);
+        }
     }
 
 }
