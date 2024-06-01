@@ -3,4 +3,4 @@ bin/
 *.class
 
 # mvn project files
-/target
+target/
