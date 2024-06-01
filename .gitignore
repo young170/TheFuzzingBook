@@ -1,3 +1,6 @@
 # class files
 bin/
 *.class
+
+# mvn project files
+/target
